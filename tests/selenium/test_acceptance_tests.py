@@ -24,8 +24,8 @@ def test_can_start_a_list_and_retrieve_it_later(b):
 		inputbox.send_keys(Keys.ENTER)
 
 		table = b.find_element_by_id('id_list_table')
-		rows = find.elements_by_tag_name('tr')
-		assert any(row.text == '1. Buy peacock feathers' for row in rows)
+		rows = b.find_elements_by_tag_name('tr')
+		assert any(row.text == '1. Buy peacock feathers' for row in rows), 'New to-do item did not appear in table'
 
 		# There is still a text box inviting her to add another item. She
 		# enters "Use peacock feathers to make a fly" (Edith is very methodical)
