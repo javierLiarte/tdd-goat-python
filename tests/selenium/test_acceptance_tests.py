@@ -1,6 +1,12 @@
 import pytest
 from selenium.webdriver.common.keys import Keys
 
+def check_for_row_in_list_table(browser, row_text):
+  table = browser.find_element_by_id('id_list_table')
+  rows = table.find_elements_by_tag_name('tr')
+  assert row_text in [row.text for row in rows]
+  
+
 def test_can_start_a_list_and_retrieve_it_later(b):
     # Edith has heard about a cool new online to-do app. She goes
     # to check out its homepage
@@ -22,10 +28,7 @@ def test_can_start_a_list_and_retrieve_it_later(b):
     # When she hits enter, the page updates, and now the page lists
     # "1: Buy peacock feathers" as an item in a to-do list
     inputbox.send_keys(Keys.ENTER)
-
-    table = b.find_element_by_id('id_list_table')
-    rows = b.find_elements_by_tag_name('tr')
-    assert '1: Buy peacock feathers' in [row.text for row in rows]
+    check_for_row_in_list_table(b, '1: Buy peacock feathers')
     
     # There is still a text box inviting her to add another item. She
     # enters "Use peacock feathers to make a fly" (Edith is very methodical)
@@ -34,11 +37,9 @@ def test_can_start_a_list_and_retrieve_it_later(b):
     inputbox.send_keys(Keys.ENTER)
 
     # The page updates again, and now shows both items on her list
-    table = b.find_element_by_id('id_list_table')
-    rows = table.find_elements_by_tag_name('tr')
-    assert '1: Buy peacock feathers' in [row.text for row in rows]
-    assert '2: Use peacock feathers to make a fly' in [row.text for row in rows]
-
+    check_for_row_in_list_table(b, '1: Buy peacock feathers')
+    check_for_row_in_list_table(b, '2: Use peacock feathers to make a fly')
+    
     # Edith wonders whether the site will remember her list. Then she sees
     # that the site has generated a unique URL for her -- there is some
     # explanatory text to that effect.
