@@ -9,21 +9,28 @@ browsers = {
 
 @pytest.fixture(scope='session', params=browsers.keys())
 def driver(request):
+  ''' driver factory, for allowing more than one browser object in a fixture '''
   if 'DISPLAY' not in os.environ:
     pytest.skip('Test requires display server (export DISPLAY)')
 
-  b = browsers[request.param]()
-  request.addfinalizer(lambda *args: b.quit())
-  return b
+  class DriverFactory(object):
+    def get(self):
+      b = browsers[request.param]()
+      request.addfinalizer(lambda *args: b.quit())  
+      return b
+  return DriverFactory()
 
 @pytest.fixture
-def b(driver, url):
-  b = driver
-  b.set_window_size(1200, 800)
-  b.implicitly_wait(3)
-  b.get(url)
-
-  return b
+def bf(driver, url):
+  ''' browser factory, for allowing more than one browser object in a fixture '''
+  class BrowserFactory(object):
+    def get(self):
+      b = driver.get()
+      b.set_window_size(1200, 800)
+      b.implicitly_wait(3)
+      b.get(url)
+      return b
+  return BrowserFactory()
 
 def pytest_addoption(parser):
   parser.addoption('--url', action='store',
