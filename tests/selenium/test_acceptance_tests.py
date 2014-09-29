@@ -48,7 +48,7 @@ def test_can_start_a_list_and_retrieve_it_later(bf, live_server):
 
   ## We use a new browser session to make sure that no information
   ## of Edith's is coming through from cookies etc
-  b.quit()
+  b.close()
   b = bf.get()
 
   # Francis visits the home page. There is no sign of Edith's
