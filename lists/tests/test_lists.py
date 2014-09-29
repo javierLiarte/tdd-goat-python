@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from lists.views import home_page
-from lists.models import Item
+from lists.models import Item, List
 
 testserver_url = 'http://testserver'
 
@@ -30,8 +30,9 @@ class TestListView(object):
 
   @pytest.mark.django_db
   def test_list_view_displays_all_list_items(self, client):
-    Item.objects.create(text='itemey 1')
-    Item.objects.create(text='itemey 2')
+    list_ = List.objects.create()
+    Item.objects.create(text='itemey 1', list=list_)
+    Item.objects.create(text='itemey 2', list=list_)
 
     response = client.get('/lists/the-only-list-in-the-world/')
 
