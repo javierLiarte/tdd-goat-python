@@ -40,8 +40,7 @@ def test_home_page_redirects_after_POST():
   response = home_page(request)
 
   assert response.status_code == 302
-  assert response['location'] == '/'
-
+  assert response['location'] == '/lists/the-only-list-in-the-world/'
 
 @pytest.mark.django_db
 def test_home_page_only_saves_items_when_necessary():
@@ -49,13 +48,20 @@ def test_home_page_only_saves_items_when_necessary():
   home_page(request)
   assert Item.objects.count() == 0
 
-@pytest.mark.django_db
-def test_home_page_displays_all_list_items():
-  Item.objects.create(text='itemey 1')
-  Item.objects.create(text='itemey 2')
+class TestListView(object):
 
-  request = HttpRequest()
-  response = home_page(request)
+  @pytest.mark.django_db
+  def test_uses_list_template(self, client):
+    response = client.get('/lists/the-only-list-in-the-world/')
+    template_names = [t.name for t in response.templates]
+    assert 'list.html' in template_names
 
-  assert 'itemey 1' in response.content.decode()
-  assert 'itemey 2' in response.content.decode()
+  @pytest.mark.django_db
+  def test_list_view_displays_all_list_items(self, client):
+    Item.objects.create(text='itemey 1')
+    Item.objects.create(text='itemey 2')
+
+    response = client.get('/lists/the-only-list-in-the-world/')
+
+    assert 'itemey 1' in response.content.decode()
+    assert 'itemey 2' in response.content.decode()

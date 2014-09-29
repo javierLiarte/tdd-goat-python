@@ -31,7 +31,7 @@ def test_can_start_a_list_and_retrieve_it_later(bf, live_server):
   # "1: Buy peacock feathers" as an item in a to-do list
   inputbox.send_keys(Keys.ENTER)
   edith_list_url = b.current_url
-  assert re.match('/lists/.+', edith_list_url), edith_list_url
+  assert re.match(live_server.url + '/lists/.+', edith_list_url), edith_list_url
   check_for_row_in_list_table(b, '1: Buy peacock feathers')
   
   # There is still a text box inviting her to add another item. She
@@ -66,7 +66,7 @@ def test_can_start_a_list_and_retrieve_it_later(bf, live_server):
 
   # Francis gets his own unique URL
   francis_list_url = b.current_url
-  assert re.match(francis_list_url, '/lists/.+')
+  assert re.match(live_server.url + '/lists/.+', francis_list_url)
   assert francis_list_url != edith_list_url
 
   # Again, there is no trace of Edith's list
